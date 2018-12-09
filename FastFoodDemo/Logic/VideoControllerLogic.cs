@@ -1,4 +1,5 @@
-﻿using FastFoodDemo.Models;
+﻿using AxWMPLib;
+using FastFoodDemo.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,13 +12,13 @@ namespace FastFoodDemo.Logic
 {
     public class VideoControllerLogic
     {
-        public VlcControl VideoPlayer { get; set; }
+        public AxWindowsMediaPlayer VideoPlayer { get; set; }
         public List<SignificantMoment> SkipMoments { get; set; }
         public SignificantMoment MomentToWatchNow { get; set; }
 
         private Timer Timer { get; set; }
 
-        public VideoControllerLogic(VlcControl videoPlayer)
+        public VideoControllerLogic(AxWindowsMediaPlayer videoPlayer)
         {
             this.VideoPlayer = videoPlayer;
             SkipMoments = new List<SignificantMoment>();
@@ -33,12 +34,12 @@ namespace FastFoodDemo.Logic
             {
                 return;
             }
-            var currentTime = VideoPlayer.Time;
+            var currentTime = VideoPlayer.Ctlcontrols.currentPosition;
             if (MomentToWatchNow != null)
             {
                 if (currentTime > MomentToWatchNow.SkipTo)
                 {
-                    VideoPlayer.Time = MomentToWatchNow.SkipFrom;
+                    VideoPlayer.Ctlcontrols.currentPosition = MomentToWatchNow.SkipFrom;
                 }
             }
             else
@@ -49,7 +50,7 @@ namespace FastFoodDemo.Logic
                     if (haGotcha.Any())
                     {
                         var endTime = haGotcha.Max(x => x.SkipTo);
-                        VideoPlayer.Time = endTime;
+                        VideoPlayer.Ctlcontrols.currentPosition = endTime;
                     }
                 }
             }
@@ -65,32 +66,31 @@ namespace FastFoodDemo.Logic
             return $"{timeSpan.Hours}:{timeSpan.Minutes}:{timeSpan.Seconds}";
         }
 
-        internal void Play(SignificantMoment momentToWach)
-        {
-            Play(momentToWach);
-        }
-
         internal void Play(SignificantMoment momentToWach, bool fullScreen = false)
         {
-            VideoPlayer.Time = momentToWach.SkipFrom;
-            VideoPlayer.Play();
+            VideoPlayer.Ctlcontrols.currentPosition = momentToWach.SkipFrom;
+            VideoPlayer.Ctlcontrols.play();
             MomentToWatchNow = momentToWach;
         }
 
         internal void Play(Video video, bool fullScreen = false)
         {
-            var uri = new Uri(video.Path);
-            var convertedURI = uri.AbsoluteUri;
-            VideoPlayer.Stop();
+            VideoPlayer.Ctlcontrols.stop();
 
+            VideoPlayer.URL = video.Path;
             SkipMoments = video.TimeSkips.Where(x => x.SkipThis).ToList();
+            VideoPlayer.Ctlcontrols.play();
             if (fullScreen)
             {
-                VideoPlayer.Play(convertedURI, ":fullscreen");
+                VideoPlayer.PlayStateChange += SetStateFullscreen;
             }
-            else
+        }
+
+        private void SetStateFullscreen(object sender, _WMPOCXEvents_PlayStateChangeEvent e)
+        {
+            if (VideoPlayer.playState == WMPLib.WMPPlayState.wmppsPlaying)
             {
-                VideoPlayer.Play(convertedURI);
+                VideoPlayer.fullScreen = true;
             }
         }
     }

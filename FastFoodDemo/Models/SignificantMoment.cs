@@ -8,8 +8,8 @@ namespace FastFoodDemo.Models
 {
     public class SignificantMoment
     {
-        public long SkipFrom { get; set; }
-        public long SkipTo { get; set; }
+        public double SkipFrom { get; set; }
+        public double SkipTo { get; set; }
         public bool SkipThis { get; set; }
         public string Description { get; set; }
         public Parent Parent { get; set; }

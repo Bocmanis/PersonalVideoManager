@@ -46,7 +46,7 @@ namespace FastFoodDemo.Controls
         {
             get
             {
-                return $"{GetHHMMssFromMiliseconds(videoPlayer.Time)}/{GetHHMMssFromMiliseconds(videoPlayer.Length)}";
+                return $"{GetHHMMssFromMiliseconds(videoPlayer.Ctlcontrols.currentPosition)}/{GetHHMMssFromMiliseconds(videoPlayer.currentMedia?.duration ?? 0)}";
             }
         }
 
@@ -62,9 +62,9 @@ namespace FastFoodDemo.Controls
             {
                 stopWatchingMomentButton.Visible = true;
             }
-            if (videoPlayer.Time + 500 > videoPlayer.Length)
+            if (videoPlayer.Ctlcontrols.currentPosition + 1 > videoPlayer.currentMedia.duration && videoPlayer.currentMedia.duration > 20)
             {
-                var hasFullScreen = false;
+                var hasFullScreen = videoPlayer.fullScreen;
                 var video = Context.GetNextVideo(Video);
                 if (video != null)
                 {
@@ -75,19 +75,19 @@ namespace FastFoodDemo.Controls
 
         private void backButton_Click(object sender, EventArgs e)
         {
-            if (videoPlayer.Time < 10000)
+            if (videoPlayer.Ctlcontrols.currentPosition < 10000)
             {
-                videoPlayer.Time = 0;
+                videoPlayer.Ctlcontrols.currentPosition = 0;
             }
             else
             {
-                videoPlayer.Time -= (long)new TimeSpan(0, 0, 10).TotalMilliseconds;
+                videoPlayer.Ctlcontrols.currentPosition -= (long)new TimeSpan(0, 0, 10).TotalMilliseconds;
             }
         }
 
         private void forwardButton_Click(object sender, EventArgs e)
         {
-            videoPlayer.Time += (long)new TimeSpan(0, 0, 10).TotalMilliseconds;
+            videoPlayer.Ctlcontrols.currentPosition += (long)new TimeSpan(0, 0, 10).TotalMilliseconds;
         }
 
         private void addButton_Click(object sender, EventArgs e)
@@ -96,8 +96,8 @@ namespace FastFoodDemo.Controls
             parent.VideoId = Video.Id;
             var model = new SignificantMoment()
             {
-                SkipFrom = videoPlayer.Time,
-                SkipTo = videoPlayer.Length,
+                SkipFrom = videoPlayer.Ctlcontrols.currentPosition,
+                SkipTo = videoPlayer.currentMedia.duration,
                 SkipThis = true,
                 Parent = parent
             };

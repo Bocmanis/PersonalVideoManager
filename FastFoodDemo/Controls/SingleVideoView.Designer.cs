@@ -42,7 +42,7 @@
             this.stopWatchingMomentButton = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.momentsFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
-            this.videoPlayer = new Vlc.DotNet.Forms.VlcControl();
+            this.videoPlayer = new AxWMPLib.AxWindowsMediaPlayer();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.videoPlayer)).BeginInit();
             this.SuspendLayout();
@@ -165,16 +165,12 @@
             // 
             // videoPlayer
             // 
-            this.videoPlayer.BackColor = System.Drawing.Color.Black;
-            this.videoPlayer.Location = new System.Drawing.Point(3, 44);
+            this.videoPlayer.Enabled = true;
+            this.videoPlayer.Location = new System.Drawing.Point(3, 45);
             this.videoPlayer.Name = "videoPlayer";
-            this.videoPlayer.Size = new System.Drawing.Size(566, 418);
-            this.videoPlayer.Spu = -1;
+            this.videoPlayer.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("videoPlayer.OcxState")));
+            this.videoPlayer.Size = new System.Drawing.Size(588, 430);
             this.videoPlayer.TabIndex = 12;
-            this.videoPlayer.Text = "vlcControl1";
-            this.videoPlayer.VlcLibDirectory = ((System.IO.DirectoryInfo)(resources.GetObject("videoPlayer.VlcLibDirectory")));
-            this.videoPlayer.VlcMediaplayerOptions = new string[] {
-        "-f"};
             // 
             // SingleVideoView
             // 
@@ -214,6 +210,6 @@
         private System.Windows.Forms.Button stopWatchingMomentButton;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.FlowLayoutPanel momentsFlowLayoutPanel;
-        private Vlc.DotNet.Forms.VlcControl videoPlayer;
+        private AxWMPLib.AxWindowsMediaPlayer videoPlayer;
     }
 }
